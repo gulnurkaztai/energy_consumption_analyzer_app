@@ -6,10 +6,19 @@
 	objectVersion = 56;
 	objects = {
 
+/* Begin PBXFileReference section */
+		B0F003682B46723100982E87 /* app.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = app.py; sourceTree = "<group>"; };
+		B0F003692B4673F100982E87 /* templates */ = {isa = PBXFileReference; lastKnownFileType = folder; name = templates; path = static/templates; sourceTree = "<group>"; };
+		B0F0036A2B46741D00982E87 /* static */ = {isa = PBXFileReference; lastKnownFileType = folder; path = static; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
 /* Begin PBXGroup section */
 		B0F0035D2B4671CE00982E87 = {
 			isa = PBXGroup;
 			children = (
+				B0F0036A2B46741D00982E87 /* static */,
+				B0F003682B46723100982E87 /* app.py */,
+				B0F003692B4673F100982E87 /* templates */,
 			);
 			sourceTree = "<group>";
 		};
