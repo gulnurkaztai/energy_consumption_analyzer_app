@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, DateField, FloatField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo
 
 
@@ -64,6 +64,19 @@ class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Login')
+
+class EnergyDataForm(FlaskForm):
+    date = DateField('Date', format='%Y-%m-%d', validators=[DataRequired()])
+    energy_usage = FloatField('Energy Usage', validators=[DataRequired()])
+    energy_type = SelectField(
+        'Energy Type', 
+        choices=[('electricity', 'Electricity'), ('gas', 'Gas'), ('water', 'Water')],
+        validators=[DataRequired()]
+    )
+    submit = SubmitField('Submit')
+
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
@@ -106,19 +119,28 @@ def home():
     return render_template('home.html')
 
 @app.route('/add-data', methods=['GET', 'POST'])
+@login_required
 def add_data():
-    if request.method == 'POST':
-        date = request.form['date']
-        energy_usage = request.form['energy_usage']
-        energy_type = request.form['energy_type']
-        print(f"Date: {date}, energy_usage: {energy_usage}, Energy Type: {energy_type}")
-
+    form = EnergyDataForm()
+    if form.validate_on_submit():
+        energy_data = EnergyData(
+            date=form.date.data,
+            consumption=form.energy_usage.data,
+            energy_type=form.energy_type.data,
+            user_id=current_user.id 
+        )
+        db.session.add(energy_data)
+        db.session.commit()
+        flash('Energy data added successfully!', 'success')
         return redirect(url_for('home'))
 
-    return render_template('add_data.html')
+    return render_template('add_data.html', form=form)
+
+
 
 
 @app.route('/view-data')
+@login_required
 def view_data():
     # Data retrieval and presentation logic will go here
     return render_template('view_data.html')

@@ -6,22 +6,51 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="/add-data" method="POST">
-        <label for="energy_type">Energy Type:</label>
-        <select id="energy_type" name="energy_type" required>
-            <option value="electricity">Electricity</option>
-            <option value="gas">Gas</option>
-            <option value="water">Water</option>
-        </select><br><br>
+
+    <form method="post" action="{{ url_for('add_data') }}">
+        {{ form.hidden_tag() }}
+        
+        <p>
+            {{ form.date.label }}<br>
+            {{ form.date(size=20) }}
+            {% if form.date.errors %}
+                <ul>
+                {% for error in form.date.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </p>
     
-        <label for="energy_usage">Energy Usage:</label>
-        <input type="number" id="energy_usage" name="energy_usage" required><br><br>
+        <p>
+            {{ form.energy_usage.label }}<br>
+            {{ form.energy_usage(size=20) }}
+            {% if form.energy_usage.errors %}
+                <ul>
+                {% for error in form.energy_usage.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </p>
     
-        <label for="date">Date:</label>
-        <input type="date" id="date" name="date" required><br><br>
+        <p>
+            {{ form.energy_type.label }}<br>
+            {{ form.energy_type() }}
+            {% if form.energy_type.errors %}
+                <ul>
+                {% for error in form.energy_type.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </p>
+        
     
-        <input type="submit" value="Submit">
+        <p>{{ form.submit() }}</p>
     </form>
+    
+
 </body>
 </html>
 
