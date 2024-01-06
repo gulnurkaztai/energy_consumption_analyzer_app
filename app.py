@@ -81,12 +81,20 @@ class EnergyDataForm(FlaskForm):
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
+        print("Form submitted successfully")
+        print("Username:", form.username.data)
+        print("Email:", form.email.data)
+        user = User(username=form.username.data, 
+                    email=form.email.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
         return redirect(url_for('login'))
+    else:
+        print("Form Data:", form.data)
+        print("Form Errors:", form.errors)
     return render_template('register.html', form=form)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
