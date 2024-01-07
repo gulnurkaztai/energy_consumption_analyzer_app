@@ -115,7 +115,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user)
-            return redirect(url_for('home'))
+            return redirect(url_for('profile'))
         else:
             flash('Invalid email or password', 'error') 
     return render_template('login.html', form=form)
@@ -139,22 +139,30 @@ def home():
     return render_template('home.html')
 
 @app.route('/add-data', methods=['GET', 'POST'])
-@login_required
 def add_data():
     form = EnergyDataForm()
     if form.validate_on_submit():
-        energy_data = EnergyData(
-            date=form.date.data,
-            consumption=form.energy_usage.data,
-            energy_type=form.energy_type.data,
-            user_id=current_user.id 
-        )
-        db.session.add(energy_data)
-        db.session.commit()
-        flash('Energy data added successfully!', 'success')
+        # Check if the user is logged in
+        if current_user.is_authenticated:
+            # Save data for logged-in users
+            energy_data = EnergyData(
+                date=form.date.data,
+                consumption=form.energy_usage.data,
+                energy_type=form.energy_type.data,
+                user_id=current_user.id 
+            )
+            db.session.add(energy_data)
+            db.session.commit()
+            flash('Energy data added to your history!', 'success')
+        else:
+            # Provide immediate feedback for anonymous users
+            # But don't save the data to the database
+            flash('Thanks for submitting your data. Sign up or log in for detailed analysis and history tracking.', 'info')
+        
         return redirect(url_for('home'))
 
     return render_template('add_data.html', form=form)
+
 
 
 
